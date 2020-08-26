@@ -47,40 +47,39 @@ def assignRead(read, ReferenceIDDictionary, ReferenceIDCount, ReadAlignments, ou
 	senseAlignment=False
 	noUsableRecords=True
 	for record in read:
-		if record.is_secondary is False:
-			if record.is_proper_pair:
-				if record.is_read1:	
-					if isSenseAlignment(record): 			#Either the specific record is a Sense Alignment
-						noUsableRecords=False
-						senseAlignment=True
-						thisLib = "Sense"
-						#Find the associated R2 to this R1
-						read_one_reference = record.reference_name
-						for look_for_read2 in read:
-							if look_for_read2.is_read2 and look_for_read2.reference_name == read_one_reference:
-								read_two_record = look_for_read2
-								break
-					elif isAntiSenseAlignment(record):		#Or the record is an Anti-Sense Alignment
-						noUsableRecords=False
-						antiSenseAlignment=True
-						thisLib = "AntiSense"
-						#Find the associated R2 to this R1
-						read_one_reference = record.reference_name
-						for look_for_read2 in read:
-							if look_for_read2.is_read2 and look_for_read2.reference_name == read_one_reference:
-								read_two_record = look_for_read2
-								break
+		if record.is_proper_pair:
+			if record.is_read1:	
+				if isSenseAlignment(record): 			#Either the specific record is a Sense Alignment
+					noUsableRecords=False
+					senseAlignment=True
+					thisLib = "Sense"
+					#Find the associated R2 to this R1
+					read_one_reference = record.reference_name
+					for look_for_read2 in read:
+						if look_for_read2.is_read2 and look_for_read2.reference_name == read_one_reference:
+							read_two_record = look_for_read2
+							break
+				elif isAntiSenseAlignment(record):		#Or the record is an Anti-Sense Alignment
+					noUsableRecords=False
+					antiSenseAlignment=True
+					thisLib = "AntiSense"
+					#Find the associated R2 to this R1
+					read_one_reference = record.reference_name
+					for look_for_read2 in read:
+						if look_for_read2.is_read2 and look_for_read2.reference_name == read_one_reference:
+							read_two_record = look_for_read2
+							break
 
-					#Group the Reads by their Sense or Antisense alignments
-					#OverallReads[thisLib].append(record)
+				#Group the Reads by their Sense or Antisense alignments
+				#OverallReads[thisLib].append(record)
 
-					#Our Library detects appears to be Reversely Stranded so we should just keep them all...
-					keptAlignments.append(record)
+				#Our Library detects appears to be Reversely Stranded so we should just keep them all...
+				keptAlignments.append(record)
 
-					#print record.query_name
-					#print reference
-				elif record.is_read2:
-					continue
+				#print record.query_name
+				#print reference
+			elif record.is_read2:
+				continue
 
 	for record in keptAlignments:
 		print record.reference_name
